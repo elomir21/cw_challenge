@@ -21,7 +21,11 @@ class DataExtract:
     
     @classmethod
     def generate_report(cls, country_ids):
-        """Method responsible for generate the report required"""
+        """Method responsible for generate the report required
+
+        :param country_ids: The IDs list of the countries
+        :type country_ids: list
+        """
         db = DbConnection()
         for country_id in country_ids:
             report_insert = f"""
