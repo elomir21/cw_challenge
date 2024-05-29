@@ -51,10 +51,10 @@ After put the informations above, click in save, congrats! your connection was c
 
 In the image bellow, we can see the steps to run the application, 1 - activate the auto-refresh (will help us to see the dags running), 2 - activate the first dag to create the required tables and 3 - activate the dag responsible for extraction and report creation.
 
-![dags](/home/elomir/Documents/projects/personal/cw_challenge/readme_images/dags.png)
+![dags](readme_images/dags.png)
 
 
 
 With the dags steps completed, we can access the report connecting on database with the credentials above, you can use tools like pgadmin or Dbeaver and so, access the table **report** to see the data.
 
-![result](/home/elomir/Documents/projects/personal/cw_challenge/readme_images/result.png)
+![result](readme_images/result.png)
