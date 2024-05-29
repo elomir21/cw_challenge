@@ -3,11 +3,10 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 
 
 class DbConnection:
-    def __init__(self) -> None:
-        ...
+    """Class responsible for all implementations of database connection"""
 
-    def run_query(self, query: str, get_all: bool = False) -> None:
-        """Method responsible for execute queries
+    def run_query(self, query, get_all=False):
+        """Method responsible for connect with database and execute queries
 
         :param query: The query to be run
         :type query: str
@@ -17,8 +16,8 @@ class DbConnection:
         :rtype: None or str
         """
         db_connection = PostgresHook(
-            postgres_conn_id="airflow-db",
-            database="postgres",
+            postgres_conn_id=os.environ["DB_CONNECTION"],
+            database=os.environ["DB_DATABASE"],
         )
 
         connection = db_connection.get_conn()

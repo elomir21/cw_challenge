@@ -17,7 +17,7 @@ with DAG(
 
     create_country_table = PostgresOperator(
         task_id="create_country_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             CREATE TABLE country (
                 country_id VARCHAR,
@@ -29,7 +29,7 @@ with DAG(
 
     create_gdp_table = PostgresOperator(
         task_id="create_gdp_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             CREATE TABLE gdp (
                 country_id VARCHAR,
@@ -41,17 +41,17 @@ with DAG(
 
     create_report_table = PostgresOperator(
         task_id="create_report_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             CREATE TABLE report (
                 id VARCHAR,
                 name VARCHAR,
                 iso3_code VARCHAR,
-                "2019" VARCHAR,
-                "2020" VARCHAR,
-                "2021" VARCHAR,
-                "2022" VARCHAR,
-                "2023" VARCHAR
+                "2019" NUMERIC,
+                "2020" NUMERIC,
+                "2021" NUMERIC,
+                "2022" NUMERIC,
+                "2023" NUMERIC
             );
         """
     )

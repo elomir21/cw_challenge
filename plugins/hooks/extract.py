@@ -1,5 +1,5 @@
+import logging
 import requests
-from concurrent.futures import ThreadPoolExecutor
 from utils.db_connection import DbConnection
 
 
@@ -10,6 +10,8 @@ class DataExtract:
     @classmethod
     def formatting_data(cls):
         """Method responsible to format data"""
+        logging.info("Formatting values to  generate the report")
+
         remove_none = """
             UPDATE gdp
             SET value = null
@@ -26,6 +28,8 @@ class DataExtract:
         :param country_ids: The IDs list of the countries
         :type country_ids: list
         """
+        logging.info("Generating report")
+
         db = DbConnection()
         for country_id in country_ids:
             report_insert = f"""
@@ -47,17 +51,62 @@ class DataExtract:
                     c.name,
                     c.iso3_code;
             """
-            print(report_insert)
             db.run_query(report_insert)
+
+
+    @classmethod
+    def insert_data(cls, countries_data):
+        """Method responsible for insert data into db
+
+        :param country_data: Country informations
+        :type country_data: list
+        """
+        logging.info("Inserting data into database")
+
+        db = DbConnection()
+
+        country_ids = []
+
+        for country_data in countries_data:
+            country_insert = f"""
+                INSERT INTO country VALUES (
+                    '{country_data["country_id"]}',
+                    '{country_data["country_name"]}',
+                    '{country_data["iso3_code"]}'
+                );
+            """
+
+            if country_data["country_id"] not in country_ids:
+                db.run_query(country_insert)
+                country_ids.append(country_data["country_id"]) if country_data["country_id"] not in country_ids else None
+
+            gdp_insert = f"""
+                INSERT INTO gdp VALUES (
+                    '{country_data["country_id"]}',
+                    '{country_data["year"]}',
+                    '{country_data["value"]}'
+                );
+            """
+            db.run_query(gdp_insert)
+
+        cls.formatting_data()
+        cls.generate_report(country_ids)
 
 
     @classmethod
     def get_api_data(cls):
         """Method responsible for get the data from api"""
-        
-        countries_available = ["ARG", "BOL", "BRA", "CHL", "COL", "ECU", "GUY", "PRY", "PER", "SUR", "URY", "VEN"]
 
-        url = f"https://api.worldbank.org/v2/country/ARG;BOL;BRA;CHL;COL;ECU;GUY;PRY;PER;SUR;URY;VEN/indicator/NY.GDP.MKTP.CD?format=json&page=1&per_page=1000"
+        logging.info("Getting data from API")
+
+        countries_available = [
+            "ARG", "BOL", "BRA",
+            "CHL", "COL", "ECU",
+            "GUY", "PRY", "PER",
+            "SUR", "URY", "VEN"
+        ]
+
+        url = f"https://api.worldbank.org/v2/country/{';'.join(countries_available)}/indicator/NY.GDP.MKTP.CD?format=json&page=1&per_page=1000"
 
         response = requests.get(url)
 
@@ -80,42 +129,4 @@ class DataExtract:
 
         if countries_data:
             cls.insert_data(countries_data)
-
-
-    @classmethod
-    def insert_data(cls, countries_data):
-        """Method responsible for insert data into db
-
-        :param country_data: Country informations
-        :type country_data: list
-        """
-        db = DbConnection()
-
-        country_ids = []
-
-        for country_data in countries_data:
-            country_insert = f"""
-                INSERT INTO country VALUES (
-                    '{country_data["country_id"]}',
-                    '{country_data["country_name"]}',
-                    '{country_data["iso3_code"]}'
-                );
-            """
-
-            if country_data["country_id"] not in country_ids:
-                print("country inserted")
-                db.run_query(country_insert)
-                country_ids.append(country_data["country_id"]) if country_data["country_id"] not in country_ids else None
-
-            gdp_insert = f"""
-                INSERT INTO gdp VALUES (
-                    '{country_data["country_id"]}',
-                    '{country_data["year"]}',
-                    '{country_data["value"]}'
-                );
-            """
-            db.run_query(gdp_insert)
-
-        cls.formatting_data()
-        cls.generate_report(country_ids)
 

@@ -17,7 +17,7 @@ with DAG(
 
     drop_country_table = PostgresOperator(
         task_id="drop_country_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             DROP TABLE country;
         """
@@ -25,7 +25,7 @@ with DAG(
 
     drop_gdp_table = PostgresOperator(
         task_id="drop_gdp_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             DROP TABLE gdp;
         """
@@ -33,7 +33,7 @@ with DAG(
 
     drop_report_table = PostgresOperator(
         task_id="drop_report_table",
-        postgres_conn_id="airflow-db",
+        postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
             DROP TABLE report;
         """

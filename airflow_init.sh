@@ -6,7 +6,7 @@ create_environment() {
 	if [ -f ./.env ]; then
 		echo "The .env file alredy created"
 	else
-		echo -e "AIRFLOW_UID=$(id -u)\nDB_CONNECTION=airflow-db" > .env
+		echo -e "AIRFLOW_UID=$(id -u)\nDB_CONNECTION=airflow-db\nDB_DATABASE=postgres" > .env
 	fi
 
 	if [ -d ./dags ] && [ -d ./logs ] && [ -d ./plugins ] && [ -d ./config ]; then
@@ -23,8 +23,6 @@ airflow_init() {
 	sudo docker compose logs -f
 
 }
-
-export $(grep -v '^#' .env | xargs)
 
 create_environment
 airflow_init
