@@ -15,11 +15,11 @@ with DAG(
 
     start_tasks = DummyOperator(task_id="start_tasks")
 
-    test_dag_python = PythonOperator(
+    extract_dag_python = PythonOperator(
         task_id="extract_data_from_api",
-        python_callable=DataExtract.get_api_data
+        python_callable=DataExtract.get_api_data,
     )
 
     end_tasks = DummyOperator(task_id="end_tasks")
 
-    start_tasks >> test_dag_python >> end_tasks
+    start_tasks >> extract_dag_python >> end_tasks

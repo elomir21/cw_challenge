@@ -5,7 +5,7 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 class DbConnection:
     """Class responsible for all implementations of database connection"""
 
-    def run_query(self, query, get_all=False):
+    def run_query(self, query: str, get_all=False) -> list | None:
         """Method responsible for connect with database and execute queries
 
         :param query: The query to be run
@@ -32,3 +32,5 @@ class DbConnection:
 
         if get_all:
             return db.fetchall()
+
+        connection.close()

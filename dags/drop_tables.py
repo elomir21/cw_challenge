@@ -19,35 +19,34 @@ with DAG(
         task_id="drop_country_table",
         postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
-            DROP TABLE country;
-        """
+            DROP TABLE IF EXISTS country;
+        """,
     )
 
     drop_gdp_table = PostgresOperator(
         task_id="drop_gdp_table",
         postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
-            DROP TABLE gdp;
-        """
+            DROP TABLE IF EXISTS gdp;
+        """,
     )
 
     drop_report_table = PostgresOperator(
         task_id="drop_report_table",
         postgres_conn_id=os.environ["DB_CONNECTION"],
         sql="""
-            DROP TABLE report;
-        """
+            DROP TABLE IF EXISTS report;
+        """,
     )
 
     end_tasks = DummyOperator(task_id="end_tasks")
 
     (
         start_tasks
-        >> 
-        [
+        >> [
             drop_country_table,
             drop_gdp_table,
-            drop_report_table
+            drop_report_table,
         ]
         >> end_tasks
     )
